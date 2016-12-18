@@ -7,6 +7,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using KT.Core;
 using NJsonSchema;
+using NJsonSchema.CodeGeneration.CSharp;
+using NJsonSchema.CodeGeneration.TypeScript;
+using NJsonSchema.Generation;
 using NJsonSchema.Validation;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -84,6 +87,8 @@ namespace KaitaiSandbox
             }
 
             var allValidationErrors = ksyValidationErrors.SelectMany(x => x.Value.Select(err => new { fn = x.Key, err })).ToArray();
+            var csharp = new CSharpGenerator(schema, new CSharpGeneratorSettings { ClassStyle = CSharpClassStyle.Poco }).GenerateFile("KsyFile");
+            var typescript = new TypeScriptGenerator(schema, new TypeScriptGeneratorSettings()).GenerateFile("KsyFile");
         }
     }
 }
