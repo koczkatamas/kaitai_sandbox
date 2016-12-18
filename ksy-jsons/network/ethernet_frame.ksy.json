@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "id": "ethernet_frame"
+  },
+  "seq": [
+    {
+      "id": "dst_mac",
+      "size": 6
+    },
+    {
+      "id": "src_mac",
+      "size": 6
+    },
+    {
+      "id": "ether_type",
+      "type": "u2be",
+      "enum": "ether_type"
+    },
+    {
+      "id": "ipv4_body",
+      "type": "ipv4_packet",
+      "size-eos": true,
+      "if": "ether_type == ether_type::ipv4"
+    },
+    {
+      "id": "body",
+      "size-eos": true,
+      "if": "ether_type != ether_type::ipv4"
+    }
+  ],
+  "enums": {
+    "ether_type": {
+      "2048": "ipv4",
+      "2049": "x_75_internet",
+      "2050": "nbs_internet",
+      "2051": "ecma_internet",
+      "2052": "chaosnet",
+      "2053": "x_25_level_3",
+      "2054": "arp"
+    }
+  }
+}

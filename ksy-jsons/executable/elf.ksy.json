@@ -1,0 +1,434 @@
+{
+  "meta": {
+    "id": "elf",
+    "endian": "le",
+    "application": "Executable and Linkable Format (SVR4 ABI and up), many *nix systems"
+  },
+  "seq": [
+    {
+      "id": "file_header",
+      "type": "file_header"
+    }
+  ],
+  "types": {
+    "file_header": {
+      "seq": [
+        {
+          "id": "magic",
+          "size": 4,
+          "contents": [
+            127,
+            "ELF"
+          ],
+          "doc": "File identification, must be 0x7f + \"ELF\"."
+        },
+        {
+          "id": "bits",
+          "type": "u1",
+          "enum": "bits",
+          "doc": "File class: designates target machine word size (32 or 64 bits). The size of many integer fields in this format will depend on this setting.\n"
+        },
+        {
+          "id": "endian",
+          "type": "u1",
+          "enum": "endian",
+          "doc": "Endianness used for all integers."
+        },
+        {
+          "id": "ei_version",
+          "type": "u1",
+          "doc": "ELF header version."
+        },
+        {
+          "id": "abi",
+          "type": "u1",
+          "enum": "os_abi",
+          "doc": "Specifies which OS- and ABI-related extensions will be used in this ELF file.\n"
+        },
+        {
+          "id": "abi_version",
+          "type": "u1",
+          "doc": "Version of ABI targeted by this ELF file. Interpretation depends on `abi` attribute.\n"
+        },
+        {
+          "id": "pad",
+          "size": 7
+        },
+        {
+          "id": "e_type",
+          "type": "u2",
+          "enum": "obj_type"
+        },
+        {
+          "id": "machine",
+          "type": "u2",
+          "enum": "machine"
+        },
+        {
+          "id": "e_version",
+          "type": "u4"
+        },
+        {
+          "id": "entry_point",
+          "type": {
+            "switch-on": "bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "program_header_offset",
+          "type": {
+            "switch-on": "bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "section_header_offset",
+          "type": {
+            "switch-on": "bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "flags",
+          "size": 4
+        },
+        {
+          "id": "e_ehsize",
+          "type": "u2"
+        },
+        {
+          "id": "program_header_entry_size",
+          "type": "u2"
+        },
+        {
+          "id": "qty_program_header",
+          "type": "u2"
+        },
+        {
+          "id": "section_header_entry_size",
+          "type": "u2"
+        },
+        {
+          "id": "qty_section_header",
+          "type": "u2"
+        },
+        {
+          "id": "section_names_idx",
+          "type": "u2"
+        }
+      ]
+    },
+    "program_header": {
+      "seq": [
+        {
+          "id": "type",
+          "type": "u4",
+          "enum": "ph_type"
+        },
+        {
+          "id": "flags64",
+          "type": "u4",
+          "if": "_root.file_header.bits == bits::b64"
+        },
+        {
+          "id": "offset",
+          "type": {
+            "switch-on": "_root.file_header.bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "vaddr",
+          "type": {
+            "switch-on": "_root.file_header.bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "paddr",
+          "type": {
+            "switch-on": "_root.file_header.bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "filesz",
+          "type": {
+            "switch-on": "_root.file_header.bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "memsz",
+          "type": {
+            "switch-on": "_root.file_header.bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "flags32",
+          "type": "u4",
+          "if": "_root.file_header.bits == bits::b32"
+        },
+        {
+          "id": "align",
+          "type": {
+            "switch-on": "_root.file_header.bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        }
+      ]
+    },
+    "section_header": {
+      "seq": [
+        {
+          "id": "name_offset",
+          "type": "u4"
+        },
+        {
+          "id": "type",
+          "type": "u4",
+          "enum": "sh_type"
+        },
+        {
+          "id": "flags",
+          "type": {
+            "switch-on": "_root.file_header.bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "addr",
+          "type": {
+            "switch-on": "_root.file_header.bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "offset",
+          "type": {
+            "switch-on": "_root.file_header.bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "size",
+          "type": {
+            "switch-on": "_root.file_header.bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "linked_section_idx",
+          "type": "u4"
+        },
+        {
+          "id": "info",
+          "size": 4
+        },
+        {
+          "id": "align",
+          "type": {
+            "switch-on": "_root.file_header.bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        },
+        {
+          "id": "entry_size",
+          "type": {
+            "switch-on": "_root.file_header.bits",
+            "cases": {
+              "bits::b32": "u4",
+              "bits::b64": "u8"
+            }
+          }
+        }
+      ],
+      "instances": {
+        "body": {
+          "io": "_root._io",
+          "pos": "offset",
+          "size": "size"
+        },
+        "name": {
+          "io": "_root.strings._io",
+          "pos": "name_offset",
+          "type": "strz",
+          "encoding": "ASCII"
+        }
+      }
+    },
+    "strings": {
+      "seq": [
+        {
+          "id": "entries",
+          "type": "strz",
+          "repeat": "eos",
+          "encoding": "ASCII"
+        }
+      ]
+    }
+  },
+  "instances": {
+    "program_headers": {
+      "pos": "file_header.program_header_offset",
+      "repeat": "expr",
+      "repeat-expr": "file_header.qty_program_header",
+      "size": "file_header.program_header_entry_size",
+      "type": "program_header"
+    },
+    "section_headers": {
+      "pos": "file_header.section_header_offset",
+      "repeat": "expr",
+      "repeat-expr": "file_header.qty_section_header",
+      "size": "file_header.section_header_entry_size",
+      "type": "section_header"
+    },
+    "strings": {
+      "pos": "section_headers[file_header.section_names_idx].offset",
+      "size": "section_headers[file_header.section_names_idx].size",
+      "type": "strings"
+    }
+  },
+  "enums": {
+    "bits": {
+      "1": "b32",
+      "2": "b64"
+    },
+    "endian": {
+      "1": "le",
+      "2": "be"
+    },
+    "os_abi": {
+      "0": "system_v",
+      "1": "hp_ux",
+      "2": "netbsd",
+      "3": "gnu",
+      "6": "solaris",
+      "7": "aix",
+      "8": "irix",
+      "9": "freebsd",
+      "10": "tru64",
+      "11": "modesto",
+      "12": "openbsd",
+      "13": "openvms",
+      "14": "nsk",
+      "15": "aros",
+      "16": "fenixos",
+      "17": "cloudabi",
+      "18": "openvos"
+    },
+    "obj_type": {
+      "1": "relocatable",
+      "2": "executable",
+      "3": "shared",
+      "4": "core"
+    },
+    "machine": {
+      "0": "not_set",
+      "2": "sparc",
+      "3": "x86",
+      "8": "mips",
+      "20": "powerpc",
+      "40": "arm",
+      "42": "superh",
+      "50": "ia_64",
+      "62": "x86_64",
+      "183": "aarch64"
+    },
+    "ph_type": {
+      "0": "null_type",
+      "1": "load",
+      "2": "dynamic",
+      "3": "interp",
+      "4": "note",
+      "5": "shlib",
+      "6": "phdr",
+      "7": "tls",
+      "1879048191": "hios",
+      "1685382480": "gnu_eh_frame",
+      "1685382481": "gnu_stack"
+    },
+    "sh_type": {
+      "0": "null_type",
+      "1": "progbits",
+      "2": "symtab",
+      "3": "strtab",
+      "4": "rela",
+      "5": "hash",
+      "6": "dynamic",
+      "7": "note",
+      "8": "nobits",
+      "9": "rel",
+      "10": "shlib",
+      "11": "dynsym",
+      "14": "init_array",
+      "15": "fini_array",
+      "16": "preinit_array",
+      "17": "group",
+      "18": "symtab_shndx",
+      "1879048175": "sunw_capchain",
+      "1879048176": "sunw_capinfo",
+      "1879048177": "sunw_symsort",
+      "1879048178": "sunw_tlssort",
+      "1879048179": "sunw_ldynsym",
+      "1879048180": "sunw_dof",
+      "1879048181": "sunw_cap",
+      "1879048182": "sunw_signature",
+      "1879048183": "sunw_annotate",
+      "1879048184": "sunw_debugstr",
+      "1879048185": "sunw_debug",
+      "1879048186": "sunw_move",
+      "1879048187": "sunw_comdat",
+      "1879048188": "sunw_syminfo",
+      "1879048189": "sunw_verdef",
+      "1879048190": "sunw_verneed",
+      "1879048191": "sunw_versym",
+      "1879048192": "sparc_gotdata",
+      "1879048193": "amd64_unwind"
+    }
+  }
+}

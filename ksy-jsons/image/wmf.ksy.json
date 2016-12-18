@@ -1,0 +1,207 @@
+{
+  "meta": {
+    "id": "wmf",
+    "endian": "le"
+  },
+  "seq": [
+    {
+      "id": "special_header",
+      "type": "special_header"
+    },
+    {
+      "id": "header",
+      "type": "header"
+    },
+    {
+      "id": "records",
+      "type": "record",
+      "repeat": "until",
+      "repeat-until": "_.function == func::eof"
+    }
+  ],
+  "types": {
+    "special_header": {
+      "seq": [
+        {
+          "id": "magic",
+          "contents": [
+            215,
+            205,
+            198,
+            154
+          ]
+        },
+        {
+          "id": "handle",
+          "contents": [
+            0,
+            0
+          ]
+        },
+        {
+          "id": "left",
+          "type": "s2"
+        },
+        {
+          "id": "top",
+          "type": "s2"
+        },
+        {
+          "id": "right",
+          "type": "s2"
+        },
+        {
+          "id": "bottom",
+          "type": "s2"
+        },
+        {
+          "id": "inch",
+          "type": "u2"
+        },
+        {
+          "id": "reserved",
+          "contents": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "checksum",
+          "type": "u2"
+        }
+      ]
+    },
+    "header": {
+      "seq": [
+        {
+          "id": "metafile_type",
+          "type": "u2",
+          "enum": "metafile_type"
+        },
+        {
+          "id": "header_size",
+          "type": "u2"
+        },
+        {
+          "id": "version",
+          "type": "u2"
+        },
+        {
+          "id": "size",
+          "type": "u4"
+        },
+        {
+          "id": "number_of_objects",
+          "type": "u2"
+        },
+        {
+          "id": "max_record",
+          "type": "u4"
+        },
+        {
+          "id": "number_of_members",
+          "type": "u2"
+        }
+      ],
+      "enums": {
+        "metafile_type": {
+          "1": "memory_metafile",
+          "2": "disk_metafile"
+        }
+      }
+    },
+    "record": {
+      "seq": [
+        {
+          "id": "size",
+          "type": "u4"
+        },
+        {
+          "id": "function",
+          "type": "u2",
+          "enum": "func"
+        },
+        {
+          "id": "params",
+          "size": "(size - 3) * 2"
+        }
+      ]
+    }
+  },
+  "enums": {
+    "func": {
+      "0": "eof",
+      "53": "realizepalette",
+      "55": "setpalentries",
+      "258": "setbkmode",
+      "259": "setmapmode",
+      "260": "setrop2",
+      "261": "setrelabs",
+      "262": "setpolyfillmode",
+      "263": "setstretchbltmode",
+      "264": "settextcharextra",
+      "295": "restoredc",
+      "313": "resizepalette",
+      "322": "dibcreatepatternbrush",
+      "329": "setlayout",
+      "513": "setbkcolor",
+      "521": "settextcolor",
+      "529": "offsetviewportorg",
+      "531": "lineto",
+      "532": "moveto",
+      "544": "offsetcliprgn",
+      "552": "fillregion",
+      "561": "setmapperflags",
+      "564": "selectpalette",
+      "804": "polygon",
+      "805": "polyline",
+      "522": "settextjustification",
+      "523": "setwindoworg",
+      "524": "setwindowext",
+      "525": "setviewportorg",
+      "526": "setviewportext",
+      "527": "offsetwindoworg",
+      "1040": "scalewindowext",
+      "1042": "scaleviewportext",
+      "1045": "excludecliprect",
+      "1046": "intersectcliprect",
+      "1048": "ellipse",
+      "1049": "floodfill",
+      "1065": "frameregion",
+      "1078": "animatepalette",
+      "1313": "textout",
+      "1336": "polypolygon",
+      "1352": "extfloodfill",
+      "1051": "rectangle",
+      "1055": "setpixel",
+      "1564": "roundrect",
+      "1565": "patblt",
+      "30": "savedc",
+      "2074": "pie",
+      "2851": "stretchblt",
+      "1574": "escape",
+      "298": "invertregion",
+      "299": "paintregion",
+      "300": "selectclipregion",
+      "301": "selectobject",
+      "302": "settextalign",
+      "2071": "arc",
+      "2096": "chord",
+      "2338": "bitblt",
+      "2610": "exttextout",
+      "3379": "setdibtodev",
+      "2368": "dibbitblt",
+      "2881": "dibstretchblt",
+      "3907": "stretchdib",
+      "496": "deleteobject",
+      "247": "createpalette",
+      "505": "createpatternbrush",
+      "762": "createpenindirect",
+      "763": "createfontindirect",
+      "764": "createbrushindirect",
+      "1791": "createregion"
+    }
+  }
+}

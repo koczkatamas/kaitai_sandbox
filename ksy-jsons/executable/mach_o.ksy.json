@@ -1,0 +1,135 @@
+{
+  "meta": {
+    "id": "mach_o",
+    "endian": "le"
+  },
+  "seq": [
+    {
+      "id": "header",
+      "type": "header"
+    },
+    {
+      "id": "load_commands",
+      "type": "load_command",
+      "repeat": "expr",
+      "repeat-expr": "header.ncmds"
+    }
+  ],
+  "types": {
+    "header": {
+      "seq": [
+        {
+          "id": "magic",
+          "type": "u4"
+        },
+        {
+          "id": "cputype",
+          "type": "u4",
+          "enum": "cputype"
+        },
+        {
+          "id": "cpusubtype",
+          "type": "u4"
+        },
+        {
+          "id": "filetype",
+          "type": "u4",
+          "enum": "filetype"
+        },
+        {
+          "id": "ncmds",
+          "type": "u4"
+        },
+        {
+          "id": "sizeofcmds",
+          "type": "u4"
+        },
+        {
+          "id": "flags",
+          "type": "u4"
+        }
+      ],
+      "enums": {
+        "cputype": {
+          "7": "i386",
+          "8": "mips",
+          "12": "arm",
+          "14": "sparc",
+          "18": "powerpc",
+          "16777223": "x86_64",
+          "16777234": "powerpc64"
+        },
+        "filetype": {
+          "1": "object",
+          "2": "execute",
+          "3": "fvmlib",
+          "4": "core",
+          "5": "preload",
+          "6": "dylib",
+          "7": "dylinker",
+          "8": "bundle",
+          "9": "dylib_stub",
+          "10": "dsym",
+          "11": "kext_bundle"
+        }
+      }
+    },
+    "load_command": {
+      "seq": [
+        {
+          "id": "cmd",
+          "type": "u4",
+          "enum": "lc"
+        },
+        {
+          "id": "cmdsize",
+          "type": "u4"
+        },
+        {
+          "id": "body",
+          "size": "cmdsize - 8"
+        }
+      ],
+      "enums": {
+        "lc": {
+          "2147483648": "req_dyld",
+          "1": "segment",
+          "2": "symtab",
+          "3": "symseg",
+          "4": "thread",
+          "5": "unixthread",
+          "6": "loadfvmlib",
+          "7": "idfvmlib",
+          "8": "ident",
+          "9": "fvmfile",
+          "10": "prepage",
+          "11": "dysymtab",
+          "12": "load_dylib",
+          "13": "id_dylib",
+          "14": "load_dylinker",
+          "15": "id_dylinker",
+          "16": "prebound_dylib",
+          "17": "routines",
+          "18": "sub_framework",
+          "19": "sub_umbrella",
+          "20": "sub_client",
+          "21": "sub_library",
+          "22": "twolevel_hints",
+          "23": "prebind_cksum",
+          "2147483672": "load_weak_dylib",
+          "25": "segment_64",
+          "26": "routines_64",
+          "27": "uuid",
+          "2147483676": "rpath",
+          "29": "code_signature",
+          "30": "segment_split_info",
+          "2147483679": "reexport_dylib",
+          "32": "lazy_load_dylib",
+          "33": "encryption_info",
+          "34": "dyld_info",
+          "2147483682": "dyld_info_only"
+        }
+      }
+    }
+  }
+}

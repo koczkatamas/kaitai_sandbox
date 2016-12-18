@@ -1,0 +1,275 @@
+{
+  "meta": {
+    "id": "jpeg",
+    "endian": "be"
+  },
+  "seq": [
+    {
+      "id": "segments",
+      "type": "segment",
+      "repeat": "eos"
+    }
+  ],
+  "types": {
+    "segment": {
+      "seq": [
+        {
+          "id": "magic",
+          "contents": [
+            255
+          ]
+        },
+        {
+          "id": "marker",
+          "type": "u1",
+          "enum": "marker"
+        },
+        {
+          "id": "length",
+          "type": "u2",
+          "if": "marker != marker::soi and marker != marker::eoi"
+        },
+        {
+          "id": "data",
+          "size": "length - 2",
+          "if": "marker != marker::soi and marker != marker::eoi",
+          "type": {
+            "switch-on": "marker",
+            "cases": {
+              "marker::app0": "segment_app0",
+              "marker::app1": "segment_app1",
+              "marker::sof0": "segment_sof0",
+              "marker::sos": "segment_sos"
+            }
+          }
+        },
+        {
+          "id": "image_data",
+          "size-eos": true,
+          "if": "marker == marker::sos"
+        }
+      ],
+      "enums": {
+        "marker": {
+          "1": "tem",
+          "192": "sof0",
+          "193": "sof1",
+          "194": "sof2",
+          "195": "sof3",
+          "196": "dht",
+          "197": "sof5",
+          "198": "sof6",
+          "199": "sof7",
+          "216": "soi",
+          "217": "eoi",
+          "218": "sos",
+          "219": "dqt",
+          "220": "dnl",
+          "221": "dri",
+          "224": "app0",
+          "225": "app1",
+          "226": "app2",
+          "254": "com"
+        }
+      }
+    },
+    "segment_app0": {
+      "seq": [
+        {
+          "id": "magic",
+          "type": "str",
+          "encoding": "ASCII",
+          "size": 5
+        },
+        {
+          "id": "version_major",
+          "type": "u1"
+        },
+        {
+          "id": "version_minor",
+          "type": "u1"
+        },
+        {
+          "id": "density_units",
+          "type": "u1",
+          "enum": "density_unit"
+        },
+        {
+          "id": "density_x",
+          "type": "u2",
+          "doc": "Horizontal pixel density. Must not be zero."
+        },
+        {
+          "id": "density_y",
+          "type": "u2",
+          "doc": "Vertical pixel density. Must not be zero."
+        },
+        {
+          "id": "thumbnail_x",
+          "type": "u1",
+          "doc": "Horizontal pixel count of the following embedded RGB thumbnail. May be zero."
+        },
+        {
+          "id": "thumbnail_y",
+          "type": "u1",
+          "doc": "Vertical pixel count of the following embedded RGB thumbnail. May be zero."
+        },
+        {
+          "id": "thumbnail",
+          "size": "thumbnail_x * thumbnail_y * 3",
+          "doc": "Uncompressed 24 bit RGB (8 bits per color channel) raster thumbnail data in the order R0, G0, B0, ... Rn, Gn, Bn"
+        }
+      ],
+      "enums": {
+        "density_unit": {
+          "0": "no_units",
+          "1": "pixels_per_inch",
+          "2": "pixels_per_cm"
+        }
+      }
+    },
+    "segment_app1": {
+      "seq": [
+        {
+          "id": "magic",
+          "type": "strz",
+          "encoding": "ASCII"
+        },
+        {
+          "id": "body",
+          "type": {
+            "switch-on": "magic",
+            "cases": {
+              "\"Exif\"": "exif_in_jpeg"
+            }
+          }
+        }
+      ]
+    },
+    "segment_sof0": {
+      "seq": [
+        {
+          "id": "bits_per_sample",
+          "type": "u1"
+        },
+        {
+          "id": "image_height",
+          "type": "u2"
+        },
+        {
+          "id": "image_width",
+          "type": "u2"
+        },
+        {
+          "id": "num_components",
+          "type": "u1"
+        },
+        {
+          "id": "components",
+          "type": "component",
+          "repeat": "expr",
+          "repeat-expr": "num_components"
+        }
+      ],
+      "types": {
+        "component": {
+          "seq": [
+            {
+              "id": "id",
+              "type": "u1",
+              "enum": "component_id",
+              "doc": "Component selector"
+            },
+            {
+              "id": "sampling_factors",
+              "type": "u1"
+            },
+            {
+              "id": "quantization_table_id",
+              "type": "u1"
+            }
+          ],
+          "instances": {
+            "sampling_x": {
+              "value": "(sampling_factors & 0xf0) >> 4"
+            },
+            "sampling_y": {
+              "value": "sampling_factors & 0xf"
+            }
+          }
+        }
+      }
+    },
+    "segment_sos": {
+      "seq": [
+        {
+          "id": "num_components",
+          "type": "u1",
+          "doc": "Number of components in scan"
+        },
+        {
+          "id": "components",
+          "type": "component",
+          "repeat": "expr",
+          "repeat-expr": "num_components",
+          "doc": "Scan components specification"
+        },
+        {
+          "id": "start_spectral_selection",
+          "type": "u1",
+          "doc": "Start of spectral selection or predictor selection"
+        },
+        {
+          "id": "end_spectral",
+          "type": "u1",
+          "doc": "End of spectral selection"
+        },
+        {
+          "id": "appr_bit_pos",
+          "type": "u1",
+          "doc": "Successive approximation bit position high + Successive approximation bit position low or point transform"
+        }
+      ],
+      "types": {
+        "component": {
+          "seq": [
+            {
+              "id": "id",
+              "type": "u1",
+              "enum": "component_id",
+              "doc": "Scan component selector"
+            },
+            {
+              "id": "huffman_table",
+              "type": "u1"
+            }
+          ]
+        }
+      }
+    },
+    "exif_in_jpeg": {
+      "seq": [
+        {
+          "id": "extra_zero",
+          "contents": [
+            0
+          ]
+        },
+        {
+          "id": "data",
+          "size-eos": true,
+          "type": "exif"
+        }
+      ]
+    }
+  },
+  "enums": {
+    "component_id": {
+      "1": "y",
+      "2": "cb",
+      "3": "cr",
+      "4": "i",
+      "5": "q"
+    }
+  }
+}
